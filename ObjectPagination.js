@@ -29,26 +29,17 @@ function ObjectPagination(data, page_size, randomize) {
 
     //get page function
     this.get_page = function (index) {
-        //console.log("page size is " + page_size);
-        //console.log("page length is " + this._.pages.length);
-        console.log("index: get me page " + index);
 
         //If the requested index is greater than page_size, shrink it down to a number that is less than the page size
         //this is used for when there arent enough pages created and returns a page already in the list by doing some maths.
         while (index >= (this._.pages.length)) {
             index = index - (this._.pages.length);
         }
-        console.log("index is now: " + index);
-        //while (index > (page_size - 1)) {
-        //    index = index - (page_size - 1);
-        //}
 
         if (index < this._.pages.length) {
-            console.log("giving you page " + index);
             //return requested page object at index
             return this._.pages[index];
         } else {
-            console.log("giving you page", (page_size - 1) % index);
             //if index requested is greater than pagination object length, return the modulus of index and page size
             //this ensures we stay within the range of 0 to page_size
             return this._.pages[((page_size - 1) % index)];

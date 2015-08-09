@@ -3,7 +3,18 @@ function ObjectPagination(data, page_size, randomize) {
     //private member variables & functions
     this._ = {
         "pages": [],
-        "page_init": function page_init(data, page_size) {
+        "randomize_array": function () {
+            //randomize array
+            for (var n = 0; n < data.length - 1; n++) {
+                var k = n + Math.floor(Math.random() * (data.length - n));
+
+                var temp = data[k];
+                data[k] = data[n];
+                data[n] = temp;
+            }
+        },
+        "page_init": function () {
+            //initialize page object
             for (var i = 0; i < (data.length / page_size) ; i++) {
                 var page_obj = [];
                 for (var j = 0; j < page_size; j++) {
@@ -18,41 +29,37 @@ function ObjectPagination(data, page_size, randomize) {
 
     //get page function
     this.get_page = function (index) {
+        //console.log("page size is " + page_size);
+        //console.log("page length is " + this._.pages.length);
+        console.log("index: get me page " + index);
+
         //If the requested index is greater than page_size, shrink it down to a number that is less than the page size
         //this is used for when there arent enough pages created and returns a page already in the list by doing some maths.
-        while (index > (page_size-1)) {
-            index = index - (page_size-1);
+        while (index >= (this._.pages.length)) {
+            index = index - (this._.pages.length);
         }
+        console.log("index is now: " + index);
+        //while (index > (page_size - 1)) {
+        //    index = index - (page_size - 1);
+        //}
+
         if (index < this._.pages.length) {
-            //return requested page object
+            console.log("giving you page " + index);
+            //return requested page object at index
             return this._.pages[index];
         } else {
+            console.log("giving you page", (page_size - 1) % index);
             //if index requested is greater than pagination object length, return the modulus of index and page size
             //this ensures we stay within the range of 0 to page_size
-            return this._.pages[((page_size-1) % index)];
+            return this._.pages[((page_size - 1) % index)];
         }
     };
 
-    //randomize function
-    this.randomize_data = function shuffle(source_array) {
-        for (var n = 0; n < source_array.length - 1; n++) {
-            var k = n + Math.floor(Math.random() * (source_array.length - n));
-
-            var temp = source_array[k];
-            source_array[k] = source_array[n];
-            source_array[n] = temp;
-        }
-        return source_array;
-    }
-    
-    //Initialization of page object
+    //call randomize function if randomize parameter is true
     if (randomize) {
-        //if randomized is true, randomize data then call init function
-        this._.page_init(this.randomize_data(data), page_size);
-    }
-    else {
-        //if randomized is false, call init function with data as-is
-        this._.page_init(data, page_size);
+        this._.randomize_array();
     }
 
+    //Initialization of page object
+    this._.page_init();
 }
